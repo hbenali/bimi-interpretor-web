@@ -302,6 +302,21 @@
       color: #008080;
     }
 
+    .logo-loading {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e6f2f2;
+      border-top: 4px solid #008080;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .logo-error {
+      color: #c0392b;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
     .logo-info {
       flex: 1;
     }
@@ -366,7 +381,7 @@
 
     .invalid {
       background: #ffe1e1;
-      color: #a13030;
+      color: #c0392b;
     }
 
     .warning {
@@ -951,9 +966,8 @@
             if (answer.type === 16 && answer.data) {
               const record = answer.data.replace(/^"|"$/g, '');
               if (record.includes('v=DMARC1')) {
-                if (record.includes('p=quarantine') || record.includes('p=reject')) {
-                  return { valid: true, policy: record.includes('p=quarantine') ? 'quarantine' : 'reject' };
-                }
+                if (record.includes('p=quarantine')) return { valid: true, policy: 'quarantine' };
+                if (record.includes('p=reject')) return { valid: true, policy: 'reject' };
                 return { valid: false, policy: 'none' };
               }
             }
@@ -962,6 +976,46 @@
         return { valid: false, policy: null };
       } catch (e) {
         return { valid: false, policy: null };
+      }
+    }
+
+    // Fetch and display logo from URL
+    async function fetchLogo(url, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      // Show loading
+      container.innerHTML = '<div class="logo-loading"></div>';
+      
+      try {
+        // Use a CORS proxy to fetch the logo
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        const response = await fetch(proxyUrl);
+        
+        if (!response.ok) throw new Error('Failed to fetch logo');
+        
+        const svgText = await response.text();
+        
+        // Basic validation
+        if (!svgText.includes('<svg')) throw new Error('Not a valid SVG');
+        
+        // Create a blob URL for the SVG
+        const blob = new Blob([svgText], { type: 'image/svg+xml' });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // Display the logo
+        container.innerHTML = `<img src="${blobUrl}" alt="BIMI Logo" style="max-width:100px; max-height:100px;">`;
+        
+        // Clean up blob URL after load
+        const img = container.querySelector('img');
+        img.onload = () => URL.revokeObjectURL(blobUrl);
+        
+      } catch (error) {
+        console.error('Error fetching logo:', error);
+        container.innerHTML = `
+          <div class="logo-placeholder">❌</div>
+          <div class="logo-error">Failed to load logo</div>
+        `;
       }
     }
 
@@ -1082,7 +1136,7 @@
           
           <div class="logo-preview-section">
             <div class="logo-display">
-              <div class="logo-box">
+              <div class="logo-box" id="logoPreviewContainer">
                 <div class="logo-placeholder">🏷️</div>
               </div>
               <div style="font-size: 0.9rem; color: #006666;">Logo Preview</div>
@@ -1110,6 +1164,11 @@
             <strong>📋 DNS lookup:</strong> ${escapeHtml(bimiDomain)} IN TXT
           </div>
         `;
+
+        // Fetch and display the logo if URL exists
+        if (tags.l) {
+          fetchLogo(tags.l, 'logoPreviewContainer');
+        }
       }
     }
 
@@ -1277,7 +1336,9 @@
           <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
             <div style="flex: 0 0 120px; text-align: center;">
               <div class="logo-box" style="margin: 0 auto;">
-                ${svgContent.includes('<svg') ? '<div style="width:80px;height:80px;background:#e6f2f2;display:flex;align-items:center;justify-content:center;">✅</div>' : '❌'}
+                ${svgContent.includes('<svg') ? 
+                  '<div style="width:80px;height:80px;background:#e6f2f2;display:flex;align-items:center;justify-content:center;font-size:2rem;">✅</div>' : 
+                  '<div style="width:80px;height:80px;background:#ffe1e1;display:flex;align-items:center;justify-content:center;font-size:2rem;">❌</div>'}
               </div>
             </div>
             <div style="flex: 1;">
@@ -1290,7 +1351,9 @@
                 </span>
               </div>
               <p style="color: #4f6f6f; margin-top: 1rem;">
-                File size: ${(file.size / 1024).toFixed(2)}KB ${file.size > 32768 ? '(⚠️ Exceeds 32KB limit)' : '(✓ Within limit)'}
+                File size: ${(file.size / 1024).toFixed(2)}KB ${file.size > 32768 ? 
+                  '<span class="invalid">(⚠️ Exceeds 32KB limit)</span>' : 
+                  '<span class="valid">(✓ Within limit)</span>'}
               </p>
             </div>
           </div>
