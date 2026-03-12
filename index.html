@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMI · logo inspector & validator</title>
+  
+  <!-- SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <meta name="theme-color" content="#008080">
+  
+  <!-- modern clean CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e6fff9 0%, #d9fff0 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #1a2639;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 128, 128, 0.25), inset 0 1px 2px rgba(255,255,255,0.8);
+      width: 100%;
+      max-width: 1100px;
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: box-shadow 0.2s;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #006666, #008080);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .subhead {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #4f6f6f;
+      margin-bottom: 1.8rem;
+      border-left: 3px solid #008080;
+      padding-left: 1rem;
+      background: rgba(0, 128, 128, 0.06);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .subhead code {
+      background: #00808010;
+      padding: 0.2rem 0.5rem;
+      border-radius: 30px;
+      font-weight: 500;
+      color: #006666;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      font-weight: 550;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      color: #006666;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    label i {
+      font-style: normal;
+      background: #ccf2f2;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      color: #006666;
+    }
+
+    .domain-input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    #domainInput {
+      flex: 1 1 260px;
+      padding: 1rem 1.4rem;
+      font-size: 1.1rem;
+      background: white;
+      border: 2px solid rgba(0, 128, 128, 0.2);
+      border-radius: 60px;
+      outline: none;
+      font-weight: 450;
+      color: #1a2639;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    #domainInput:focus {
+      border-color: #008080;
+      box-shadow: 0 8px 18px -8px rgba(0, 128, 128, 0.3);
+    }
+
+    #domainInput::placeholder {
+      color: #9fc7c7;
+      font-weight: 350;
+      font-size: 1rem;
+    }
+
+    .selector-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    #selectorInput {
+      flex: 0 1 200px;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      background: white;
+      border: 2px solid rgba(0, 128, 128, 0.2);
+      border-radius: 60px;
+      outline: none;
+      font-weight: 450;
+      color: #1a2639;
+    }
+
+    #selectorInput:focus {
+      border-color: #008080;
+    }
+
+    .selector-help {
+      font-size: 0.9rem;
+      color: #4f6f6f;
+      background: #e6f2f2;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+    }
+
+    button {
+      background: #008080;
+      border: none;
+      padding: 1rem 2.3rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 12px 22px -10px #008080;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: #006666;
+      transform: scale(1.02);
+      box-shadow: 0 18px 28px -10px #006666;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.3);
+    }
+
+    .loader {
+      display: inline-block;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .result-area {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      padding: 1.8rem 1.8rem 1.8rem 2rem;
+      border: 1px solid white;
+      margin-top: 1rem;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 8px 14px -12px #006666;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .result-header h2 {
+      font-size: 1.3rem;
+      font-weight: 550;
+      color: #006666;
+    }
+
+    .badge-domain {
+      background: #ccf2f2;
+      border-radius: 40px;
+      padding: 0.3rem 1rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-weight: 550;
+      font-size: 1rem;
+      color: #006666;
+      word-break: break-all;
+      border: 1px solid white;
+    }
+
+    .logo-preview-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 2rem;
+      border: 2px dashed #008080;
+    }
+
+    .logo-display {
+      flex: 0 0 120px;
+      text-align: center;
+    }
+
+    .logo-box {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #008080;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+
+    .logo-box svg {
+      max-width: 100px;
+      max-height: 100px;
+    }
+
+    .logo-box img {
+      max-width: 100px;
+      max-height: 100px;
+    }
+
+    .logo-placeholder {
+      width: 80px;
+      height: 80px;
+      background: #e6f2f2;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #008080;
+    }
+
+    .logo-info {
+      flex: 1;
+    }
+
+    .logo-meta {
+      background: #e6f2f2;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      display: inline-block;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #006666;
+    }
+
+    .record-card {
+      background: white;
+      border-radius: 30px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 10px -6px #00808030;
+      border-left: 6px solid #008080;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.95rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .record-meta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ccf2f2;
+    }
+
+    .meta-item {
+      background: #e6f2f2;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #006666;
+    }
+
+    .validation-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+
+    .valid {
+      background: #e1f7e1;
+      color: #1a6b1a;
+    }
+
+    .invalid {
+      background: #ffe1e1;
+      color: #a13030;
+    }
+
+    .warning {
+      background: #fff4e1;
+      color: #b45b1a;
+    }
+
+    .info {
+      background: #e1f0ff;
+      color: #1a4f6b;
+    }
+
+    .bimi-ready {
+      background: #d4edda;
+      color: #27ae60;
+      border: 2px solid #27ae60;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+
+    .bimi-not-ready {
+      background: #ffe1e1;
+      color: #c0392b;
+      border: 2px solid #c0392b;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .tag {
+      background: #e6f2f2;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-family: monospace;
+      border-left: 4px solid #008080;
+    }
+
+    .tag-key {
+      font-weight: 600;
+      color: #006666;
+    }
+
+    .tag-value {
+      color: #1a2639;
+    }
+
+    .empty-state {
+      background: #e6fff9;
+      padding: 2rem 2rem;
+      border-radius: 2rem;
+      color: #4f6f6f;
+      font-weight: 400;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      border: 2px dashed #40e0d0;
+      text-align: center;
+    }
+
+    .empty-state span {
+      font-size: 2.5rem;
+    }
+
+    .error-message {
+      background: #ffeae9;
+      border-left: 6px solid #c0392b;
+      padding: 1.3rem 1.8rem;
+      border-radius: 40px;
+      color: #c0392b;
+      font-weight: 480;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 6px 12px -6px #c0392b30;
+    }
+
+    /* SVG Upload Section */
+    .upload-section {
+      margin: 2rem 0;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      border: 2px dashed #008080;
+      text-align: center;
+    }
+
+    .upload-area {
+      border: 3px dashed #008080;
+      border-radius: 2rem;
+      padding: 3rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .upload-area:hover {
+      background: rgba(0, 128, 128, 0.05);
+    }
+
+    .upload-area.dragover {
+      background: rgba(0, 128, 128, 0.1);
+      border-color: #006666;
+    }
+
+    .file-info {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+    }
+
+    .svg-preview {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 1rem;
+      display: inline-block;
+    }
+
+    /* DMARC Status */
+    .dmarc-status {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 1rem;
+    }
+
+    /* Guide section styles */
+    .guide-section {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .guide-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: white;
+      border: 2px solid #008080;
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #006666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #008080;
+      color: white;
+      border-color: #008080;
+    }
+
+    .tab-btn:hover {
+      background: #e6f2f2;
+      border-color: #008080;
+    }
+
+    .tab-btn.active:hover {
+      background: #006666;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1rem 0.5rem;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .guide-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 6px solid #008080;
+    }
+
+    .guide-card h3 {
+      color: #006666;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .code-block {
+      background: #1a2e2e;
+      color: #e6f2f2;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      margin: 1rem 0;
+    }
+
+    .command-line {
+      color: #40e0d0;
+      font-weight: 600;
+    }
+
+    .comment {
+      color: #8b9c9c;
+    }
+
+    .warning-box {
+      background: #fff4e1;
+      border-left: 6px solid #ffaa33;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin: 1rem 0;
+    }
+
+    .bimi-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .bimi-table th {
+      text-align: left;
+      padding: 0.8rem 0;
+      border-bottom: 2px solid #ccf2f2;
+    }
+
+    .bimi-table td {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #ccf2f2;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tool-card {
+      background: #e6fff9;
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .tool-card a {
+      color: #006666;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .tool-card a:hover {
+      text-decoration: underline;
+    }
+
+    .note {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #6f8f8f;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border-top: 1px solid #ccf2f2;
+      padding-top: 1.5rem;
+    }
+
+    .note a {
+      color: #006666;
+      font-weight: 550;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+
+    .note a:hover { border-bottom: 2px solid; }
+
+    footer {
+      margin-top: 2.2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6f8f8f;
+    }
+  </style>
+</head>
+<body>
+<div class="glass-card">
+  <h1>
+    <span>🏷️ BIMI · logo inspector & validator</span>
+  </h1>
+  <div class="subhead">
+    Check <strong>Brand Indicators for Message Identification</strong> — display your logo in email clients
+  </div>
+
+  <!-- main input group -->
+  <div class="input-group">
+    <label>
+      <span>Domain name</span>
+      <i>example.com</i>
+    </label>
+    <div class="domain-input-wrapper">
+      <input type="text" id="domainInput" placeholder="e.g. example.com" value="google.com" spellcheck="false" autocomplete="off">
+    </div>
+    
+    <label style="margin-top: 0.5rem;">
+      <span>Selector (optional)</span>
+      <i>default is "default"</i>
+    </label>
+    <div class="selector-wrapper">
+      <input type="text" id="selectorInput" placeholder="default" value="default">
+      <span class="selector-help">ⓘ Usually "default" or "bimi"</span>
+    </div>
+    
+    <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+      <button id="checkBtn">
+        <span id="btnText">Check BIMI</span>
+        <span id="btnLoader" style="display: none;"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- dynamic result card -->
+  <div class="result-area" id="resultContainer">
+    <!-- default info / placeholder -->
+    <div class="empty-state" id="placeholderState">
+      <span>🏷️</span>
+      <div>Enter a domain, then click "Check BIMI"<br> <span style="font-size:0.9rem;">BIMI shows your brand logo in supported email clients (Apple, Google, Yahoo).</span></div>
+    </div>
+
+    <!-- these sections are dynamically filled -->
+    <div id="recordsContainer" style="display: none;"></div>
+    <div id="errorContainer" style="display: none;"></div>
+  </div>
+
+  <!-- SVG Upload Section -->
+  <div class="upload-section">
+    <h3 style="color: #006666; margin-bottom: 1rem;">📤 Test Your BIMI SVG Logo</h3>
+    <div class="upload-area" id="uploadArea">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
+      <p style="color: #4f6f6f;">Drag & drop your BIMI SVG logo here</p>
+      <p style="color: #9fc7c7; font-size: 0.9rem;">or click to browse</p>
+      <input type="file" id="fileInput" accept=".svg" style="display: none;">
+    </div>
+    <div id="svgResults" style="display: none; margin-top: 2rem;"></div>
+  </div>
+
+  <!-- BIMI explanation -->
+  <div class="note">
+    <span>🏷️ BIMI = Brand Indicators for Message Identification</span>
+    <span>📝 Format: <code>default._bimi.domain.com TXT "v=BIMI1; l=https://logo.example.com/logo.svg; a=https://cert.example.com/pem.pem"</code></span>
+    <span>⚡ Requires DMARC p=quarantine or p=reject</span>
+  </div>
+
+  <!-- BIMI Guide Section -->
+  <div class="guide-section">
+    <div class="guide-tabs">
+      <button class="tab-btn active" id="tabOverview">🏷️ BIMI Overview</button>
+      <button class="tab-btn" id="tabSpecs">📋 SVG Specs</button>
+      <button class="tab-btn" id="tabVMC">🔐 VMC Certificates</button>
+      <button class="tab-btn" id="tabExamples">✨ Examples</button>
+    </div>
+
+    <!-- BIMI Overview Tab -->
+    <div class="tab-content active" id="overviewTab">
+      <div class="guide-card">
+        <h3>🏷️ What is BIMI?</h3>
+        <p>BIMI (Brand Indicators for Message Identification) allows brands to display their logo in supported email clients' avatar slots. This increases trust and recognition.</p>
+        
+        <div style="margin: 1.5rem 0; text-align: center;">
+          <div style="background: white; border-radius: 2rem; padding: 2rem; border: 2px solid #008080;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+              <div><span style="font-size: 3rem;">📧</span><br>From: Example</div>
+              <div style="font-size: 2rem;">→</div>
+              <div style="background: #e6f2f2; padding: 1rem; border-radius: 1rem;">
+                <div style="width: 60px; height: 60px; background: #008080; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">EX</div>
+              </div>
+              <div style="font-size: 2rem;">→</div>
+              <div><span style="font-size: 3rem;">📧</span><br>From: <span style="color: #008080;">Example</span></div>
+            </div>
+            <p style="margin-top: 1rem; color: #006666;">Without BIMI → With BIMI logo</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <h3>✅ Requirements</h3>
+        <table class="bimi-table">
+          <tr><th>Requirement</th><th>Status</th></tr>
+          <tr><td>DMARC policy p=quarantine or p=reject</td><td>🔑 Mandatory</td></tr>
+          <tr><td>HTTPS hosted SVG logo</td><td>📸 Mandatory</td></tr>
+          <tr><td>SVG Tiny 1.2 format</td><td>🎨 Mandatory</td></tr>
+          <tr><td>VMC certificate (for checkmark)</td><td>🔒 Optional but recommended</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- SVG Specs Tab -->
+    <div class="tab-content" id="specsTab">
+      <div class="guide-card">
+        <h3>🎨 BIMI SVG Requirements</h3>
+        <ul style="list-style: none;">
+          <li style="padding: 0.5rem 0;">✓ <strong>SVG Tiny 1.2</strong> profile required</li>
+          <li style="padding: 0.5rem 0;">✓ <strong>Square aspect ratio</strong> (1:1)</li>
+          <li style="padding: 0.5rem 0;">✓ <strong>No raster images</strong> (PNG/JPG embedded)</li>
+          <li style="padding: 0.5rem 0;">✓ <strong>No scripts</strong> or animations</li>
+          <li style="padding: 0.5rem 0;">✓ <strong>Max 32KB</strong> file size</li>
+          <li style="padding: 0.5rem 0;">✓ <strong>HTTPS only</strong> hosting</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h3>🔧 Sample BIMI SVG</h3>
+        <div class="code-block">
+          <span class="comment">&lt;!-- BIMI-compliant SVG Tiny 1.2 --&gt;</span><br>
+          <span>&lt;svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"&gt;</span><br>
+          <span>  &lt;rect width="100" height="100" fill="#008080" rx="20"/&gt;</span><br>
+          <span>  &lt;text x="50" y="70" font-size="40" text-anchor="middle" fill="white" font-family="Arial"&gt;B&lt;/text&gt;</span><br>
+          <span>&lt;/svg&gt;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VMC Certificates Tab -->
+    <div class="tab-content" id="vmcTab">
+      <div class="guide-card">
+        <h3>🔐 VMC (Verified Mark Certificate)</h3>
+        <p>VMCs are special certificates that prove you own the trademark for your logo. When present, email clients show a verified checkmark badge.</p>
+        
+        <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 60px; height: 60px; background: #008080; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white;">🏷️</div>
+            <div>
+              <span style="font-size: 1.2rem;">Example Brand</span>
+              <span style="background: #27ae60; color: white; padding: 0.2rem 0.8rem; border-radius: 20px; margin-left: 0.5rem;">✓ Verified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <h3>📋 VMC Issuers</h3>
+        <table class="bimi-table">
+          <tr><th>CA</th><th>Certificate Type</th></tr>
+          <tr><td>DigiCert</td><td>VMC (requires trademark)</td></tr>
+          <tr><td>Entrust</td><td>VMC (requires trademark)</td></tr>
+          <tr><td>GlobalSign</td><td>VMC (requires trademark)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Examples Tab -->
+    <div class="tab-content" id="examplesTab">
+      <div class="guide-card">
+        <h3>✨ BIMI Examples</h3>
+        <table class="bimi-table">
+          <tr><th>Domain</th><th>BIMI Status</th><th>Logo</th></tr>
+          <tr>
+            <td>google.com</td>
+            <td><span class="valid">✅ Active</span></td>
+            <td><div style="width: 40px; height: 40px; background: #4285F4; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">G</div></td>
+          </tr>
+          <tr>
+            <td>yahoo.com</td>
+            <td><span class="valid">✅ Active</span></td>
+            <td><div style="width: 40px; height: 40px; background: #6001D1; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">Y</div></td>
+          </tr>
+          <tr>
+            <td>linkedin.com</td>
+            <td><span class="valid">✅ Active</span></td>
+            <td><div style="width: 40px; height: 40px; background: #0077B5; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">in</div></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="guide-card">
+        <h3>📧 Client Support</h3>
+        <table class="bimi-table">
+          <tr><th>Email Client</th><th>BIMI Support</th><th>VMC Support</th></tr>
+          <tr><td>Gmail</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Apple Mail</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Yahoo Mail</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+          <tr><td>Outlook.com</td><td>✅ Yes</td><td>❌ No</td></tr>
+          <tr><td>Fastmail</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    bimi.hbenali.ovh · display your logo in email · part of email authentication suite
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const domainInput = document.getElementById('domainInput');
+    const selectorInput = document.getElementById('selectorInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
+    const resultContainer = document.getElementById('resultContainer');
+    const placeholderState = document.getElementById('placeholderState');
+    const recordsContainer = document.getElementById('recordsContainer');
+    const errorContainer = document.getElementById('errorContainer');
+
+    // SVG Upload elements
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const svgResults = document.getElementById('svgResults');
+
+    // Tab elements
+    const tabOverview = document.getElementById('tabOverview');
+    const tabSpecs = document.getElementById('tabSpecs');
+    const tabVMC = document.getElementById('tabVMC');
+    const tabExamples = document.getElementById('tabExamples');
+    const overviewTab = document.getElementById('overviewTab');
+    const specsTab = document.getElementById('specsTab');
+    const vmcTab = document.getElementById('vmcTab');
+    const examplesTab = document.getElementById('examplesTab');
+
+    // Tab switching
+    function switchTab(activeTab, activeContent) {
+      [tabOverview, tabSpecs, tabVMC, tabExamples].forEach(t => t.classList.remove('active'));
+      [overviewTab, specsTab, vmcTab, examplesTab].forEach(t => t.classList.remove('active'));
+      
+      activeTab.classList.add('active');
+      activeContent.classList.add('active');
+    }
+
+    if (tabOverview) tabOverview.addEventListener('click', () => switchTab(tabOverview, overviewTab));
+    if (tabSpecs) tabSpecs.addEventListener('click', () => switchTab(tabSpecs, specsTab));
+    if (tabVMC) tabVMC.addEventListener('click', () => switchTab(tabVMC, vmcTab));
+    if (tabExamples) tabExamples.addEventListener('click', () => switchTab(tabExamples, examplesTab));
+
+    // Helper functions
+    function setActiveView(view) {
+      if (placeholderState) placeholderState.style.display = 'none';
+      if (recordsContainer) recordsContainer.style.display = 'none';
+      if (errorContainer) errorContainer.style.display = 'none';
+      
+      if (view === 'placeholder' && placeholderState) {
+        placeholderState.style.display = 'flex';
+      } else if (view === 'records' && recordsContainer) {
+        recordsContainer.style.display = 'block';
+      } else if (view === 'error' && errorContainer) {
+        errorContainer.style.display = 'block';
+      }
+    }
+
+    setActiveView('placeholder');
+
+    // Check DMARC status (prerequisite for BIMI)
+    async function checkDMARC(domain) {
+      try {
+        const dmarcDomain = `_dmarc.${domain}`;
+        const url = `https://dns.google/resolve?name=${encodeURIComponent(dmarcDomain)}&type=TXT`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.Answer) {
+          for (const answer of data.Answer) {
+            if (answer.type === 16 && answer.data) {
+              const record = answer.data.replace(/^"|"$/g, '');
+              if (record.includes('v=DMARC1')) {
+                if (record.includes('p=quarantine') || record.includes('p=reject')) {
+                  return { valid: true, policy: record.includes('p=quarantine') ? 'quarantine' : 'reject' };
+                }
+                return { valid: false, policy: 'none' };
+              }
+            }
+          }
+        }
+        return { valid: false, policy: null };
+      } catch (e) {
+        return { valid: false, policy: null };
+      }
+    }
+
+    // Parse BIMI record
+    function parseBIMI(record) {
+      const tags = {};
+      const cleanRecord = record.replace(/^"|"$/g, '');
+      const parts = cleanRecord.split(';');
+      
+      parts.forEach(part => {
+        part = part.trim();
+        if (!part) return;
+        
+        const match = part.match(/^([a-zA-Z]+)=(.+)$/);
+        if (match) {
+          tags[match[1]] = match[2].trim();
+        }
+      });
+      
+      return tags;
+    }
+
+    // Validate BIMI record
+    function validateBIMI(tags) {
+      const validation = {
+        valid: true,
+        errors: [],
+        warnings: []
+      };
+
+      if (!tags.v) {
+        validation.valid = false;
+        validation.errors.push('Missing v= tag');
+      } else if (tags.v !== 'BIMI1') {
+        validation.valid = false;
+        validation.errors.push('v= must be BIMI1');
+      }
+
+      if (!tags.l) {
+        validation.valid = false;
+        validation.errors.push('Missing l= (logo URL)');
+      } else {
+        if (!tags.l.startsWith('https://')) {
+          validation.warnings.push('Logo URL should use HTTPS');
+        }
+      }
+
+      if (tags.a && !tags.a.startsWith('https://')) {
+        validation.warnings.push('VMC URL should use HTTPS');
+      }
+
+      return validation;
+    }
+
+    // Render BIMI result
+    async function renderBIMIResult(domain, selector, record) {
+      const tags = parseBIMI(record);
+      const validation = validateBIMI(tags);
+      const dmarcStatus = await checkDMARC(domain);
+      
+      let tagsHtml = '';
+      for (const [key, value] of Object.entries(tags)) {
+        tagsHtml += `
+          <span class="tag">
+            <span class="tag-key">${escapeHtml(key)}</span>=<span class="tag-value">${escapeHtml(value)}</span>
+          </span>
+        `;
+      }
+
+      let validationHtml = '';
+      if (validation.valid) {
+        validationHtml += `<span class="validation-badge valid">✅ Valid BIMI record</span>`;
+      } else {
+        validationHtml += `<span class="validation-badge invalid">❌ Invalid BIMI record</span>`;
+      }
+      
+      validation.errors.forEach(err => {
+        validationHtml += `<span class="validation-badge invalid">❌ ${escapeHtml(err)}</span>`;
+      });
+      
+      validation.warnings.forEach(warning => {
+        validationHtml += `<span class="validation-badge warning">⚠️ ${escapeHtml(warning)}</span>`;
+      });
+
+      // DMARC Status
+      let dmarcHtml = '';
+      if (dmarcStatus.valid) {
+        dmarcHtml = `
+          <div style="margin: 1rem 0; padding: 1rem; background: #d4edda; border-radius: 1rem;">
+            <span class="validation-badge valid">✅ DMARC ${dmarcStatus.policy}</span>
+            <span style="margin-left: 1rem; color: #27ae60;">BIMI ready!</span>
+          </div>
+        `;
+      } else {
+        dmarcHtml = `
+          <div style="margin: 1rem 0; padding: 1rem; background: #ffe1e1; border-radius: 1rem;">
+            <span class="validation-badge invalid">❌ DMARC not ready</span>
+            <span style="margin-left: 1rem; color: #c0392b;">Requires p=quarantine or p=reject</span>
+          </div>
+        `;
+      }
+
+      const bimiDomain = `${selector}._bimi.${domain}`;
+
+      if (recordsContainer) {
+        recordsContainer.innerHTML = `
+          <div class="result-header">
+            <h2>🏷️ BIMI record for</h2>
+            <span class="badge-domain">${escapeHtml(bimiDomain)}</span>
+          </div>
+          
+          <div class="record-meta">
+            <span class="meta-item">🌐 Domain: ${escapeHtml(domain)}</span>
+            <span class="meta-item">🔑 Selector: ${escapeHtml(selector)}</span>
+          </div>
+          
+          ${dmarcHtml}
+          
+          <div class="logo-preview-section">
+            <div class="logo-display">
+              <div class="logo-box">
+                <div class="logo-placeholder">🏷️</div>
+              </div>
+              <div style="font-size: 0.9rem; color: #006666;">Logo Preview</div>
+            </div>
+            <div class="logo-info">
+              <span class="logo-meta">📸 ${tags.l || 'No logo URL'}</span>
+              ${tags.a ? `<span class="logo-meta">🔐 VMC: ${tags.a}</span>` : ''}
+              <p style="margin-top: 1rem; color: #4f6f6f;">Upload your SVG below to test compatibility</p>
+            </div>
+          </div>
+          
+          <div class="tag-list">
+            ${tagsHtml}
+          </div>
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;">
+            ${validationHtml}
+          </div>
+          
+          <div class="record-card">
+            ${escapeHtml(record)}
+          </div>
+          
+          <div style="margin-top: 1rem; font-size:0.9rem; background: #e6f2f2; padding:1rem; border-radius:30px;">
+            <strong>📋 DNS lookup:</strong> ${escapeHtml(bimiDomain)} IN TXT
+          </div>
+        `;
+      }
+    }
+
+    function escapeHtml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe.replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+      });
+    }
+
+    function setLoading(isLoading) {
+      if (checkBtn) checkBtn.disabled = isLoading;
+      if (btnText) btnText.textContent = isLoading ? 'Checking' : 'Check BIMI';
+      if (btnLoader) {
+        btnLoader.style.display = isLoading ? 'inline-block' : 'none';
+        btnLoader.className = isLoading ? 'loader' : '';
+      }
+    }
+
+    // BIMI lookup function
+    async function queryBIMI(domain, selector) {
+      let cleanDomain = domain.trim().replace(/\.+$/, '');
+      let cleanSelector = selector.trim().replace(/\.+$/, '') || 'default';
+      
+      if (!cleanDomain) throw new Error('Please enter a domain');
+      
+      const bimiDomain = `${cleanSelector}._bimi.${cleanDomain}`;
+      
+      const url = `https://dns.google/resolve?name=${encodeURIComponent(bimiDomain)}&type=TXT`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`DNS query failed (HTTP ${response.status})`);
+      
+      const data = await response.json();
+      
+      if (data.Status === 3) {
+        throw new Error(`No BIMI record found for "${bimiDomain}"`);
+      } else if (data.Status !== 0) {
+        const reason = data.Comment || `DNS error code ${data.Status}`;
+        throw new Error(`DNS lookup error: ${reason}`);
+      }
+      
+      const answers = data.Answer || [];
+      
+      // Find BIMI records (TXT records starting with v=BIMI1)
+      const bimiRecords = answers.filter(r => {
+        if (r.type === 16 && r.data) {
+          const txt = r.data.replace(/^"|"$/g, '');
+          return txt.startsWith('v=BIMI1');
+        }
+        return false;
+      });
+      
+      if (bimiRecords.length === 0) {
+        throw new Error(`No BIMI record found for "${bimiDomain}"`);
+      }
+      
+      if (bimiRecords.length > 1) {
+        throw new Error(`Multiple BIMI records found`);
+      }
+      
+      let record = bimiRecords[0].data.replace(/^"|"$/g, '');
+      
+      return {
+        domain: cleanDomain,
+        selector: cleanSelector,
+        record: record,
+        raw: bimiRecords[0]
+      };
+    }
+
+    // Main lookup function
+    async function performLookup() {
+      if (!domainInput) return;
+      
+      const domain = domainInput.value.trim();
+      const selector = selectorInput ? selectorInput.value.trim() : 'default';
+      
+      if (!domain) {
+        setActiveView('error');
+        if (errorContainer) {
+          errorContainer.innerHTML = `
+            <div class="error-message">
+              <span style="font-size:2rem;">⚠️</span>
+              <div><strong>Missing information</strong><br>Please enter a domain</div>
+            </div>
+          `;
+        }
+        return;
+      }
+      
+      setLoading(true);
+      try {
+        const result = await queryBIMI(domain, selector);
+        await renderBIMIResult(result.domain, result.selector, result.record);
+        setActiveView('records');
+      } catch (err) {
+        console.error('BIMI lookup error:', err);
+        if (errorContainer) {
+          errorContainer.innerHTML = `
+            <div class="error-message">
+              <span style="font-size:2rem;">⚠️</span>
+              <div><strong>Error checking BIMI</strong><br>${escapeHtml(err.message)}</div>
+            </div>
+          `;
+        }
+        setActiveView('error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // SVG Upload handling
+    if (uploadArea && fileInput) {
+      uploadArea.addEventListener('click', () => fileInput.click());
+      
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      });
+      
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+      });
+      
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleSVGFile(files[0]);
+        }
+      });
+      
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleSVGFile(e.target.files[0]);
+        }
+      });
+    }
+
+    // SVG file handler
+    function handleSVGFile(file) {
+      if (!file.type.includes('svg')) {
+        alert('Please upload an SVG file');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const svgContent = e.target.result;
+        
+        // Basic SVG validation
+        const isValidSVG = svgContent.includes('<svg') && svgContent.includes('</svg>');
+        const isTinySVG = svgContent.includes('baseProfile="tiny"') || !svgContent.includes('script');
+        
+        svgResults.style.display = 'block';
+        svgResults.innerHTML = `
+          <h3 style="color: #006666; margin-bottom: 1rem;">🖼️ SVG Analysis</h3>
+          <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+            <div style="flex: 0 0 120px; text-align: center;">
+              <div class="logo-box" style="margin: 0 auto;">
+                ${svgContent.includes('<svg') ? '<div style="width:80px;height:80px;background:#e6f2f2;display:flex;align-items:center;justify-content:center;">✅</div>' : '❌'}
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="margin-bottom: 0.5rem;">
+                <span class="validation-badge ${isValidSVG ? 'valid' : 'invalid'}">
+                  ${isValidSVG ? '✅ Valid SVG' : '❌ Invalid SVG'}
+                </span>
+                <span class="validation-badge ${isTinySVG ? 'valid' : 'warning'}">
+                  ${isTinySVG ? '✅ Tiny profile' : '⚠️ Check Tiny 1.2'}
+                </span>
+              </div>
+              <p style="color: #4f6f6f; margin-top: 1rem;">
+                File size: ${(file.size / 1024).toFixed(2)}KB ${file.size > 32768 ? '(⚠️ Exceeds 32KB limit)' : '(✓ Within limit)'}
+              </p>
+            </div>
+          </div>
+        `;
+      };
+      reader.readAsText(file);
+    }
+
+    // Event listeners
+    if (checkBtn) checkBtn.addEventListener('click', performLookup);
+    if (domainInput) {
+      domainInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performLookup();
+      });
+    }
+
+    // Handle URL parameters
+    function handleUrlParameter() {
+      if (!domainInput) return;
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const domainParam = urlParams.get('domain');
+      const selectorParam = urlParams.get('selector');
+      
+      if (domainParam) domainInput.value = domainParam;
+      if (selectorParam && selectorInput) selectorInput.value = selectorParam;
+      
+      if (domainParam) {
+        setTimeout(() => performLookup(), 100);
+      }
+    }
+
+    window.addEventListener('load', handleUrlParameter);
+  })();
+</script>
+</body>
+</html>
