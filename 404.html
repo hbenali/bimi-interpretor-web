@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 · page not found · BIMI checker</title>
+  <meta name="robots" content="noindex, follow">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e6fff9 0%, #d9fff0 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #1a2639;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 128, 128, 0.25), inset 0 1px 2px rgba(255,255,255,0.8);
+      width: 100%;
+      max-width: 700px;
+      padding: 3rem 2.5rem;
+      border: 1px solid rgba(255,255,255,0.5);
+      text-align: center;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, #006666, #008080);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #008080, #40e0d0);
+      border-radius: 2px;
+      margin: 1.5rem auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #006666;
+      margin-bottom: 1rem;
+    }
+
+    .message {
+      font-size: 1.2rem;
+      color: #4f6f6f;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .domain-preview {
+      background: rgba(0, 128, 128, 0.1);
+      border-radius: 60px;
+      padding: 0.8rem 1.8rem;
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 1.1rem;
+      color: #006666;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .primary-btn {
+      background: #008080;
+      border: none;
+      padding: 1rem 2.3rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 12px 22px -10px #008080;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+    }
+
+    .primary-btn:hover {
+      background: #006666;
+      transform: scale(1.02);
+      box-shadow: 0 18px 28px -10px #006666;
+    }
+
+    .secondary-btn {
+      background: white;
+      color: #006666;
+      border: 2px solid #008080;
+      padding: 1rem 2.3rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      text-decoration: none;
+      box-shadow: 0 6px 12px -8px #00808070;
+    }
+
+    .secondary-btn:hover {
+      background: #e6fff9;
+      border-color: #006666;
+      transform: scale(1.01);
+    }
+
+    .help-links {
+      margin-top: 2.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .help-link {
+      color: #4f6f6f;
+      text-decoration: none;
+      font-size: 0.95rem;
+      border-bottom: 1px dotted #008080;
+    }
+
+    .help-link:hover {
+      color: #006666;
+      border-bottom: 2px solid #006666;
+    }
+
+    .bimi-fact {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(0, 128, 128, 0.05);
+      border-radius: 40px;
+      font-size: 0.9rem;
+      color: #6f8f8f;
+    }
+
+    .bimi-fact strong {
+      color: #006666;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      color: #6f8f8f;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #006666;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+
+    footer a:hover {
+      border-bottom: 2px solid;
+    }
+
+    .globe-icon {
+      font-size: 1.5rem;
+      margin-right: 0.3rem;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-card">
+    <div class="error-code">404</div>
+    <div class="divider"></div>
+    
+    <h1>Logo not found</h1>
+    
+    <div class="message">
+      The BIMI record or page you're looking for doesn't exist.
+    </div>
+
+    <div class="domain-preview">
+      <span class="globe-icon">🏷️</span> bimi.hbenali.ovh
+    </div>
+
+    <div class="action-buttons">
+      <a href="/" class="primary-btn">
+        <span>🏠</span> Go to homepage
+      </a>
+      <a href="/" class="secondary-btn">
+        <span>🔍</span> Check BIMI record
+      </a>
+    </div>
+
+    <div class="bimi-fact">
+      <strong>✨ Did you know?</strong> BIMI displays your brand logo in Gmail, Apple Mail, and Yahoo! Requires DMARC p=quarantine or p=reject.
+    </div>
+
+    <div class="help-links">
+      <a href="/" class="help-link">🏠 Home</a>
+      <a href="/sitemap.xml" class="help-link">📋 Sitemap</a>
+      <a href="#" class="help-link" onclick="alert('Upload your SVG logo on the homepage to test BIMI compatibility.'); return false;">🖼️ Test SVG</a>
+    </div>
+
+    <footer>
+      <a href="/">BIMI logo inspector</a> · show your brand in email
+    </footer>
+  </div>
+
+  <script>
+    // BIMI facts
+    const facts = [
+      "BIMI works with Gmail, Apple Mail, and Yahoo!",
+      "Requires DMARC p=quarantine or p=reject",
+      "SVG must be Tiny 1.2 profile",
+      "VMC certificates add a verified checkmark",
+      "Logos must be square (1:1 aspect ratio)"
+    ];
+    
+    const factElement = document.querySelector('.bimi-fact strong');
+    if (factElement) {
+      factElement.addEventListener('click', () => {
+        const randomFact = facts[Math.floor(Math.random() * facts.length)];
+        alert(`🏷️ BIMI Fact: ${randomFact}`);
+      });
+    }
+  </script>
+</body>
+</html>
