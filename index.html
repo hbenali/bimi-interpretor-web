@@ -3,14 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BIMI · logo inspector & validator</title>
-  
+  <title>BIMI Checker — Logo Inspector & DMARC/BIMI Record Validator</title>
+  <meta name="description" content="Free BIMI record checker. Instantly validate any domain's BIMI DNS record, check DMARC policy, preview the brand logo, and inspect VMC certificate details — all in your browser.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bimi.hbenali.ovh/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="BIMI Checker — Logo Inspector & DMARC/BIMI Record Validator">
+  <meta property="og:description" content="Validate any domain's BIMI DNS record, check DMARC policy, preview the brand logo, and inspect VMC certificate details.">
+  <meta property="og:url" content="https://bimi.hbenali.ovh/">
+  <meta property="og:site_name" content="BIMI Checker">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://bimi.hbenali.ovh/favicon.svg">
+  <meta property="og:image:type" content="image/svg+xml">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BIMI Checker — Logo Inspector & DMARC/BIMI Record Validator">
+  <meta name="twitter:description" content="Validate any domain's BIMI DNS record, check DMARC policy, preview the brand logo, and inspect VMC certificate details.">
+  <meta name="twitter:image" content="https://bimi.hbenali.ovh/favicon.svg">
+
   <!-- SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#008080">
-  
+
+  <!-- dns.google is only hit on-demand after a lookup -->
+  <link rel="dns-prefetch" href="https://dns.google">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "url": "https://bimi.hbenali.ovh/",
+        "name": "BIMI Checker",
+        "description": "Free BIMI record checker for validating DNS records, DMARC policy, logo previews, and VMC certificates.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://bimi.hbenali.ovh/?domain={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "BIMI Checker",
+        "url": "https://bimi.hbenali.ovh/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "description": "Check any domain's BIMI DNS record, DMARC readiness, logo preview, and VMC certificate.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- modern clean CSS -->
   <style>
     * {
@@ -19,35 +74,178 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-1: #e6fff9;
+      --bg-2: #d9fff0;
+      --text: #1a2639;
+      --text-muted: #4f6f6f;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(255, 255, 255, 0.5);
+      --accent: #008080;
+      --accent-dark: #006666;
+      --accent-solid: #008080;
+      --accent-solid-hover: #006666;
+      --input-bg: #ffffff;
+      --input-border: rgba(0, 128, 128, 0.2);
+      --placeholder: #9fc7c7;
+      --chip-bg: #ccf2f2;
+      --chip-bg2: #e6f2f2;
+      --panel-bg: rgba(255, 255, 255, 0.8);
+      --panel-bg2: #f8f9fa;
+      --result-bg: rgba(255, 255, 255, 0.6);
+      --guide-bg: rgba(255, 255, 255, 0.5);
+      --tab-border: #ccf2f2;
+      --table-border: #ccf2f2;
+      --empty-bg: #e6fff9;
+      --empty-border: #40e0d0;
+      --shadow-color: rgba(0, 128, 128, 0.25);
+      --shadow-color-strong: rgba(0, 128, 128, 0.3);
+      --shadow-soft: rgba(0, 128, 128, 0.19);
+      --valid-bg: #e1f7e1;
+      --valid-text: #1a6b1a;
+      --invalid-bg: #ffe1e1;
+      --invalid-text: #c0392b;
+      --warning-bg: #fff4e1;
+      --warning-text: #b45b1a;
+      --warning-border: #ffaa33;
+      --info-bg: #e1f0ff;
+      --info-text: #1a4f6b;
+      --success-bg: #d4edda;
+      --success-text: #27ae60;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-1: #0f1f1c;
+        --bg-2: #142925;
+        --text: #e6f5f2;
+        --text-muted: #8fb5af;
+        --card-bg: rgba(16, 34, 30, 0.78);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --accent: #2dd4bf;
+        --accent-dark: #5eead4;
+        --accent-solid: #0f8a8a;
+        --accent-solid-hover: #0c6e6e;
+        --input-bg: #11241f;
+        --input-border: rgba(45, 212, 191, 0.25);
+        --placeholder: #3f6b64;
+        --chip-bg: #16332e;
+        --chip-bg2: #132824;
+        --panel-bg: rgba(16, 34, 30, 0.6);
+        --panel-bg2: #132824;
+        --result-bg: rgba(16, 34, 30, 0.6);
+        --guide-bg: rgba(16, 34, 30, 0.55);
+        --tab-border: #1c3833;
+        --table-border: #1c3833;
+        --empty-bg: #11241f;
+        --empty-border: #1c4a43;
+        --shadow-color: rgba(0, 0, 0, 0.45);
+        --shadow-color-strong: rgba(0, 0, 0, 0.55);
+        --shadow-soft: rgba(0, 0, 0, 0.4);
+        --valid-bg: #123a1c;
+        --valid-text: #7ee2a8;
+        --invalid-bg: #3a1414;
+        --invalid-text: #ff8a8a;
+        --warning-bg: #3a2c10;
+        --warning-text: #f0b25e;
+        --warning-border: #b5791f;
+        --info-bg: #10263a;
+        --info-text: #7fc2f0;
+        --success-bg: #123a1c;
+        --success-text: #52d68a;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg-1: #0f1f1c;
+      --bg-2: #142925;
+      --text: #e6f5f2;
+      --text-muted: #8fb5af;
+      --card-bg: rgba(16, 34, 30, 0.78);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #2dd4bf;
+      --accent-dark: #5eead4;
+      --accent-solid: #0f8a8a;
+      --accent-solid-hover: #0c6e6e;
+      --input-bg: #11241f;
+      --input-border: rgba(45, 212, 191, 0.25);
+      --placeholder: #3f6b64;
+      --chip-bg: #16332e;
+      --chip-bg2: #132824;
+      --panel-bg: rgba(16, 34, 30, 0.6);
+      --panel-bg2: #132824;
+      --result-bg: rgba(16, 34, 30, 0.6);
+      --guide-bg: rgba(16, 34, 30, 0.55);
+      --tab-border: #1c3833;
+      --table-border: #1c3833;
+      --empty-bg: #11241f;
+      --empty-border: #1c4a43;
+      --shadow-color: rgba(0, 0, 0, 0.45);
+      --shadow-color-strong: rgba(0, 0, 0, 0.55);
+      --shadow-soft: rgba(0, 0, 0, 0.4);
+      --valid-bg: #123a1c;
+      --valid-text: #7ee2a8;
+      --invalid-bg: #3a1414;
+      --invalid-text: #ff8a8a;
+      --warning-bg: #3a2c10;
+      --warning-text: #f0b25e;
+      --warning-border: #b5791f;
+      --info-bg: #10263a;
+      --info-text: #7fc2f0;
+      --success-bg: #123a1c;
+      --success-text: #52d68a;
+    }
+
     body {
-      background: linear-gradient(145deg, #e6fff9 0%, #d9fff0 100%);
+      background: linear-gradient(145deg, var(--bg-1) 0%, var(--bg-2) 100%);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      color: #1a2639;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.75);
+      background: var(--card-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-radius: 2.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 128, 128, 0.25), inset 0 1px 2px rgba(255,255,255,0.8);
+      box-shadow: 0 25px 50px -12px var(--shadow-color), inset 0 1px 2px rgba(255, 255, 255, 0.1);
       width: 100%;
       max-width: 1100px;
       padding: 2.5rem 2rem;
-      border: 1px solid rgba(255,255,255,0.5);
-      transition: box-shadow 0.2s;
+      border: 1px solid var(--card-border);
+      transition: box-shadow 0.2s, background 0.3s, border 0.3s;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     h1 {
       font-size: 2.2rem;
       font-weight: 600;
       letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #006666, #008080);
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -57,23 +255,46 @@
       gap: 0.4rem;
     }
 
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1px solid var(--tab-border);
+      width: 2.7rem;
+      height: 2.7rem;
+      min-width: 2.7rem;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: none;
+      color: var(--text);
+    }
+
+    .theme-toggle:hover {
+      background: var(--input-bg);
+      transform: scale(1.08);
+      box-shadow: 0 8px 16px -8px var(--shadow-color);
+    }
+
     .subhead {
       font-size: 1rem;
       font-weight: 400;
-      color: #4f6f6f;
+      color: var(--text-muted);
       margin-bottom: 1.8rem;
-      border-left: 3px solid #008080;
+      border-left: 3px solid var(--accent);
       padding-left: 1rem;
       background: rgba(0, 128, 128, 0.06);
       border-radius: 0 8px 8px 0;
     }
 
     .subhead code {
-      background: #00808010;
+      background: rgba(0, 128, 128, 0.08);
       padding: 0.2rem 0.5rem;
       border-radius: 30px;
       font-weight: 500;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .input-group {
@@ -87,7 +308,7 @@
       font-weight: 550;
       font-size: 0.95rem;
       letter-spacing: 0.02em;
-      color: #006666;
+      color: var(--accent-dark);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -95,11 +316,11 @@
 
     label i {
       font-style: normal;
-      background: #ccf2f2;
+      background: var(--chip-bg);
       padding: 2px 8px;
       border-radius: 30px;
       font-size: 0.8rem;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .domain-input-wrapper {
@@ -113,23 +334,23 @@
       flex: 1 1 260px;
       padding: 1rem 1.4rem;
       font-size: 1.1rem;
-      background: white;
-      border: 2px solid rgba(0, 128, 128, 0.2);
+      background: var(--input-bg);
+      border: 2px solid var(--input-border);
       border-radius: 60px;
       outline: none;
       font-weight: 450;
-      color: #1a2639;
+      color: var(--text);
       transition: 0.15s;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
     }
 
     #domainInput:focus {
-      border-color: #008080;
-      box-shadow: 0 8px 18px -8px rgba(0, 128, 128, 0.3);
+      border-color: var(--accent);
+      box-shadow: 0 8px 18px -8px var(--shadow-color-strong);
     }
 
     #domainInput::placeholder {
-      color: #9fc7c7;
+      color: var(--placeholder);
       font-weight: 350;
       font-size: 1rem;
     }
@@ -146,28 +367,28 @@
       flex: 0 1 200px;
       padding: 0.8rem 1.2rem;
       font-size: 1rem;
-      background: white;
-      border: 2px solid rgba(0, 128, 128, 0.2);
+      background: var(--input-bg);
+      border: 2px solid var(--input-border);
       border-radius: 60px;
       outline: none;
       font-weight: 450;
-      color: #1a2639;
+      color: var(--text);
     }
 
     #selectorInput:focus {
-      border-color: #008080;
+      border-color: var(--accent);
     }
 
     .selector-help {
       font-size: 0.9rem;
-      color: #4f6f6f;
-      background: #e6f2f2;
+      color: var(--text-muted);
+      background: var(--chip-bg2);
       padding: 0.5rem 1rem;
       border-radius: 40px;
     }
 
     button {
-      background: #008080;
+      background: var(--accent-solid);
       border: none;
       padding: 1rem 2.3rem;
       border-radius: 60px;
@@ -179,7 +400,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 12px 22px -10px #008080;
+      box-shadow: 0 12px 22px -10px var(--shadow-color);
       transition: all 0.2s;
       border: 1px solid rgba(255, 255, 255, 0.3);
       letter-spacing: 0.3px;
@@ -187,9 +408,9 @@
     }
 
     button:hover {
-      background: #006666;
+      background: var(--accent-solid-hover);
       transform: scale(1.02);
-      box-shadow: 0 18px 28px -10px #006666;
+      box-shadow: 0 18px 28px -10px var(--shadow-color);
     }
 
     button:active {
@@ -216,13 +437,13 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .result-area {
-      background: rgba(255,255,255,0.6);
+      background: var(--result-bg);
       backdrop-filter: blur(4px);
       border-radius: 2rem;
       padding: 1.8rem 1.8rem 1.8rem 2rem;
-      border: 1px solid white;
+      border: 1px solid var(--card-border);
       margin-top: 1rem;
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 8px 14px -12px #006666;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 8px 14px -12px var(--shadow-color);
     }
 
     .result-header {
@@ -236,19 +457,19 @@
     .result-header h2 {
       font-size: 1.3rem;
       font-weight: 550;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .badge-domain {
-      background: #ccf2f2;
+      background: var(--chip-bg);
       border-radius: 40px;
       padding: 0.3rem 1rem;
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-weight: 550;
       font-size: 1rem;
-      color: #006666;
+      color: var(--accent-dark);
       word-break: break-all;
-      border: 1px solid white;
+      border: 1px solid var(--card-border);
     }
 
     .logo-preview-section {
@@ -257,9 +478,9 @@
       gap: 2rem;
       margin: 1.5rem 0;
       padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.8);
+      background: var(--panel-bg);
       border-radius: 2rem;
-      border: 2px dashed #008080;
+      border: 2px dashed var(--accent);
     }
 
     .logo-display {
@@ -270,12 +491,12 @@
     .logo-box {
       width: 120px;
       height: 120px;
-      background: white;
+      background: var(--input-bg);
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 3px solid #008080;
+      border: 3px solid var(--accent);
       margin-bottom: 0.5rem;
       overflow: hidden;
     }
@@ -293,28 +514,32 @@
     .logo-placeholder {
       width: 80px;
       height: 80px;
-      background: #e6f2f2;
+      background: var(--chip-bg2);
       border-radius: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 2rem;
-      color: #008080;
+      color: var(--accent);
     }
 
     .logo-loading {
       width: 40px;
       height: 40px;
-      border: 4px solid #e6f2f2;
-      border-top: 4px solid #008080;
+      border: 4px solid var(--chip-bg2);
+      border-top: 4px solid var(--accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
 
     .logo-error {
-      color: #c0392b;
+      color: var(--invalid-text);
       font-size: 0.9rem;
       margin-top: 0.5rem;
+    }
+
+    .logo-error a {
+      color: inherit;
     }
 
     .logo-info {
@@ -322,23 +547,23 @@
     }
 
     .logo-meta {
-      background: #e6f2f2;
+      background: var(--chip-bg2);
       padding: 0.5rem 1rem;
       border-radius: 30px;
       display: inline-block;
       margin-right: 0.5rem;
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .record-card {
-      background: white;
+      background: var(--input-bg);
       border-radius: 30px;
       padding: 1.5rem;
       margin-bottom: 1rem;
-      box-shadow: 0 4px 10px -6px #00808030;
-      border-left: 6px solid #008080;
+      box-shadow: 0 4px 10px -6px var(--shadow-soft);
+      border-left: 6px solid var(--accent);
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 0.95rem;
       overflow-x: auto;
@@ -354,15 +579,15 @@
       flex-wrap: wrap;
       margin-bottom: 1rem;
       padding-bottom: 1rem;
-      border-bottom: 1px solid #ccf2f2;
+      border-bottom: 1px solid var(--table-border);
     }
 
     .meta-item {
-      background: #e6f2f2;
+      background: var(--chip-bg2);
       padding: 0.4rem 1rem;
       border-radius: 30px;
       font-size: 0.9rem;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .validation-badge {
@@ -375,38 +600,38 @@
     }
 
     .valid {
-      background: #e1f7e1;
-      color: #1a6b1a;
+      background: var(--valid-bg);
+      color: var(--valid-text);
     }
 
     .invalid {
-      background: #ffe1e1;
-      color: #c0392b;
+      background: var(--invalid-bg);
+      color: var(--invalid-text);
     }
 
     .warning {
-      background: #fff4e1;
-      color: #b45b1a;
+      background: var(--warning-bg);
+      color: var(--warning-text);
     }
 
     .info {
-      background: #e1f0ff;
-      color: #1a4f6b;
+      background: var(--info-bg);
+      color: var(--info-text);
     }
 
     .bimi-ready {
-      background: #d4edda;
-      color: #27ae60;
-      border: 2px solid #27ae60;
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 2px solid var(--success-text);
       padding: 0.5rem 1.5rem;
       border-radius: 40px;
       font-weight: 600;
     }
 
     .bimi-not-ready {
-      background: #ffe1e1;
-      color: #c0392b;
-      border: 2px solid #c0392b;
+      background: var(--invalid-bg);
+      color: var(--invalid-text);
+      border: 2px solid var(--invalid-text);
       padding: 0.5rem 1.5rem;
       border-radius: 40px;
       font-weight: 600;
@@ -420,34 +645,34 @@
     }
 
     .tag {
-      background: #e6f2f2;
+      background: var(--chip-bg2);
       padding: 0.5rem 1rem;
       border-radius: 30px;
       font-size: 0.9rem;
       font-family: monospace;
-      border-left: 4px solid #008080;
+      border-left: 4px solid var(--accent);
     }
 
     .tag-key {
       font-weight: 600;
-      color: #006666;
+      color: var(--accent-dark);
     }
 
     .tag-value {
-      color: #1a2639;
+      color: var(--text);
     }
 
     .empty-state {
-      background: #e6fff9;
+      background: var(--empty-bg);
       padding: 2rem 2rem;
       border-radius: 2rem;
-      color: #4f6f6f;
+      color: var(--text-muted);
       font-weight: 400;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.6rem;
-      border: 2px dashed #40e0d0;
+      border: 2px dashed var(--empty-border);
       text-align: center;
     }
 
@@ -456,16 +681,16 @@
     }
 
     .error-message {
-      background: #ffeae9;
-      border-left: 6px solid #c0392b;
+      background: var(--invalid-bg);
+      border-left: 6px solid var(--invalid-text);
       padding: 1.3rem 1.8rem;
       border-radius: 40px;
-      color: #c0392b;
+      color: var(--invalid-text);
       font-weight: 480;
       display: flex;
       gap: 12px;
       align-items: center;
-      box-shadow: 0 6px 12px -6px #c0392b30;
+      box-shadow: 0 6px 12px -6px var(--shadow-soft);
     }
 
     /* SVG Upload Section */
@@ -473,14 +698,22 @@
       margin: 2rem 0;
       padding: 2rem;
       background: rgba(255, 255, 255, 0.5);
+      background: var(--guide-bg);
       backdrop-filter: blur(4px);
       border-radius: 2rem;
-      border: 2px dashed #008080;
+      border: 2px dashed var(--accent);
       text-align: center;
     }
 
+    .upload-section h2 {
+      color: var(--accent-dark);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
     .upload-area {
-      border: 3px dashed #008080;
+      display: block;
+      border: 3px dashed var(--accent);
       border-radius: 2rem;
       padding: 3rem;
       cursor: pointer;
@@ -493,39 +726,31 @@
 
     .upload-area.dragover {
       background: rgba(0, 128, 128, 0.1);
-      border-color: #006666;
+      border-color: var(--accent-dark);
     }
 
-    .file-info {
-      margin-top: 1rem;
+    .upload-area:has(#fileInput:focus-visible) {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .upload-area p {
+      color: var(--text-muted);
+    }
+
+    .upload-area .upload-hint {
+      color: var(--placeholder);
       font-size: 0.9rem;
-      color: #7f8c8d;
-    }
-
-    .svg-preview {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: white;
-      border-radius: 1rem;
-      display: inline-block;
-    }
-
-    /* DMARC Status */
-    .dmarc-status {
-      margin: 1rem 0;
-      padding: 1rem;
-      background: #f8f9fa;
-      border-radius: 1rem;
     }
 
     /* Guide section styles */
     .guide-section {
       margin-top: 2.5rem;
       padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.5);
+      background: var(--guide-bg);
       backdrop-filter: blur(4px);
       border-radius: 2rem;
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--card-border);
     }
 
     .guide-tabs {
@@ -536,30 +761,30 @@
     }
 
     .tab-btn {
-      background: white;
-      border: 2px solid #008080;
+      background: var(--input-bg);
+      border: 2px solid var(--accent);
       padding: 0.8rem 1.5rem;
       border-radius: 40px;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #006666;
+      color: var(--accent-dark);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .tab-btn.active {
-      background: #008080;
+      background: var(--accent-solid);
       color: white;
-      border-color: #008080;
+      border-color: var(--accent-solid);
     }
 
-    .tab-btn:hover {
-      background: #e6f2f2;
-      border-color: #008080;
+    .tab-btn:hover:not(.active) {
+      background: var(--chip-bg2);
+      border-color: var(--accent);
     }
 
     .tab-btn.active:hover {
-      background: #006666;
+      background: var(--accent-solid-hover);
     }
 
     .tab-content {
@@ -572,15 +797,15 @@
     }
 
     .guide-card {
-      background: white;
+      background: var(--input-bg);
       border-radius: 1.5rem;
       padding: 1.5rem;
       margin-bottom: 1rem;
-      border-left: 6px solid #008080;
+      border-left: 6px solid var(--accent);
     }
 
     .guide-card h3 {
-      color: #006666;
+      color: var(--accent-dark);
       margin-bottom: 1rem;
       font-size: 1.2rem;
       display: flex;
@@ -610,8 +835,8 @@
     }
 
     .warning-box {
-      background: #fff4e1;
-      border-left: 6px solid #ffaa33;
+      background: var(--warning-bg);
+      border-left: 6px solid var(--warning-border);
       padding: 1rem;
       border-radius: 1rem;
       margin: 1rem 0;
@@ -625,52 +850,29 @@
     .bimi-table th {
       text-align: left;
       padding: 0.8rem 0;
-      border-bottom: 2px solid #ccf2f2;
+      border-bottom: 2px solid var(--table-border);
+      color: var(--text);
     }
 
     .bimi-table td {
       padding: 0.8rem 0;
-      border-bottom: 1px solid #ccf2f2;
-    }
-
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .tool-card {
-      background: #e6fff9;
-      border-radius: 1.2rem;
-      padding: 1.2rem;
-      text-align: center;
-    }
-
-    .tool-card a {
-      color: #006666;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .tool-card a:hover {
-      text-decoration: underline;
+      border-bottom: 1px solid var(--table-border);
     }
 
     .note {
       margin-top: 2rem;
       font-size: 0.85rem;
-      color: #6f8f8f;
+      color: var(--text-muted);
       display: flex;
       justify-content: center;
       gap: 2rem;
       flex-wrap: wrap;
-      border-top: 1px solid #ccf2f2;
+      border-top: 1px solid var(--table-border);
       padding-top: 1.5rem;
     }
 
     .note a {
-      color: #006666;
+      color: var(--accent-dark);
       font-weight: 550;
       text-decoration: none;
       border-bottom: 1px dotted;
@@ -682,30 +884,48 @@
       margin-top: 2.2rem;
       text-align: center;
       font-size: 0.9rem;
-      color: #6f8f8f;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: underline;
+    }
+
+    footer a:hover {
+      color: var(--accent-dark);
+    }
+
+    @media (max-width: 480px) {
+      .glass-card { padding: 2rem 1.3rem; border-radius: 1.6rem; }
     }
   </style>
 </head>
 <body>
 <div class="glass-card">
-  <h1>
-    <span>🏷️ BIMI · logo inspector & validator</span>
-  </h1>
+  <div class="top-bar">
+    <h1>
+      <span>🏷️ BIMI · logo inspector & validator</span>
+    </h1>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+  </div>
   <div class="subhead">
     Check <strong>Brand Indicators for Message Identification</strong> — display your logo in email clients
   </div>
 
+  <h2 class="sr-only">Check a domain's BIMI record</h2>
+
   <!-- main input group -->
   <div class="input-group">
-    <label>
+    <label for="domainInput">
       <span>Domain name</span>
       <i>example.com</i>
     </label>
     <div class="domain-input-wrapper">
       <input type="text" id="domainInput" placeholder="e.g. example.com" value="google.com" spellcheck="false" autocomplete="off">
     </div>
-    
-    <label style="margin-top: 0.5rem;">
+
+    <label for="selectorInput" style="margin-top: 0.5rem;">
       <span>Selector (optional)</span>
       <i>default is "default"</i>
     </label>
@@ -713,7 +933,7 @@
       <input type="text" id="selectorInput" placeholder="default" value="default">
       <span class="selector-help">ⓘ Usually "default" or "bimi"</span>
     </div>
-    
+
     <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem;">
       <button id="checkBtn">
         <span id="btnText">Check BIMI</span>
@@ -723,7 +943,7 @@
   </div>
 
   <!-- dynamic result card -->
-  <div class="result-area" id="resultContainer">
+  <div class="result-area" id="resultContainer" aria-live="polite">
     <!-- default info / placeholder -->
     <div class="empty-state" id="placeholderState">
       <span>🏷️</span>
@@ -736,15 +956,15 @@
   </div>
 
   <!-- SVG Upload Section -->
-  <div class="upload-section">
-    <h3 style="color: #006666; margin-bottom: 1rem;">📤 Test Your BIMI SVG Logo</h3>
-    <div class="upload-area" id="uploadArea">
+  <div class="upload-section" id="upload">
+    <h2>📤 Test Your BIMI SVG Logo</h2>
+    <label class="upload-area" id="uploadArea" for="fileInput">
       <div style="font-size: 3rem; margin-bottom: 1rem;">🖼️</div>
-      <p style="color: #4f6f6f;">Drag & drop your BIMI SVG logo here</p>
-      <p style="color: #9fc7c7; font-size: 0.9rem;">or click to browse</p>
-      <input type="file" id="fileInput" accept=".svg" style="display: none;">
-    </div>
-    <div id="svgResults" style="display: none; margin-top: 2rem;"></div>
+      <p>Drag & drop your BIMI SVG logo here</p>
+      <p class="upload-hint">or click to browse</p>
+      <input type="file" id="fileInput" accept=".svg,image/svg+xml" class="sr-only" aria-label="Upload BIMI SVG logo file">
+    </label>
+    <div id="svgResults" style="display: none; margin-top: 2rem;" aria-live="polite"></div>
   </div>
 
   <!-- BIMI explanation -->
@@ -756,31 +976,32 @@
 
   <!-- BIMI Guide Section -->
   <div class="guide-section">
-    <div class="guide-tabs">
-      <button class="tab-btn active" id="tabOverview">🏷️ BIMI Overview</button>
-      <button class="tab-btn" id="tabSpecs">📋 SVG Specs</button>
-      <button class="tab-btn" id="tabVMC">🔐 VMC Certificates</button>
-      <button class="tab-btn" id="tabExamples">✨ Examples</button>
+    <h2 class="sr-only">BIMI guide & documentation</h2>
+    <div class="guide-tabs" role="tablist" aria-label="BIMI guide topics">
+      <button class="tab-btn active" id="tabOverview" type="button" role="tab" aria-selected="true" aria-controls="overviewTab" tabindex="0">🏷️ BIMI Overview</button>
+      <button class="tab-btn" id="tabSpecs" type="button" role="tab" aria-selected="false" aria-controls="specsTab" tabindex="-1">📋 SVG Specs</button>
+      <button class="tab-btn" id="tabVMC" type="button" role="tab" aria-selected="false" aria-controls="vmcTab" tabindex="-1">🔐 VMC Certificates</button>
+      <button class="tab-btn" id="tabExamples" type="button" role="tab" aria-selected="false" aria-controls="examplesTab" tabindex="-1">✨ Examples</button>
     </div>
 
     <!-- BIMI Overview Tab -->
-    <div class="tab-content active" id="overviewTab">
+    <div class="tab-content active" id="overviewTab" role="tabpanel" aria-labelledby="tabOverview" tabindex="0">
       <div class="guide-card">
         <h3>🏷️ What is BIMI?</h3>
         <p>BIMI (Brand Indicators for Message Identification) allows brands to display their logo in supported email clients' avatar slots. This increases trust and recognition.</p>
-        
+
         <div style="margin: 1.5rem 0; text-align: center;">
-          <div style="background: white; border-radius: 2rem; padding: 2rem; border: 2px solid #008080;">
+          <div style="background: var(--input-bg); border-radius: 2rem; padding: 2rem; border: 2px solid var(--accent);">
             <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap;">
               <div><span style="font-size: 3rem;">📧</span><br>From: Example</div>
               <div style="font-size: 2rem;">→</div>
-              <div style="background: #e6f2f2; padding: 1rem; border-radius: 1rem;">
-                <div style="width: 60px; height: 60px; background: #008080; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">EX</div>
+              <div style="background: var(--chip-bg2); padding: 1rem; border-radius: 1rem;">
+                <div style="width: 60px; height: 60px; background: var(--accent-solid); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">EX</div>
               </div>
               <div style="font-size: 2rem;">→</div>
-              <div><span style="font-size: 3rem;">📧</span><br>From: <span style="color: #008080;">Example</span></div>
+              <div><span style="font-size: 3rem;">📧</span><br>From: <span style="color: var(--accent);">Example</span></div>
             </div>
-            <p style="margin-top: 1rem; color: #006666;">Without BIMI → With BIMI logo</p>
+            <p style="margin-top: 1rem; color: var(--accent-dark);">Without BIMI → With BIMI logo</p>
           </div>
         </div>
       </div>
@@ -798,7 +1019,7 @@
     </div>
 
     <!-- SVG Specs Tab -->
-    <div class="tab-content" id="specsTab">
+    <div class="tab-content" id="specsTab" role="tabpanel" aria-labelledby="tabSpecs" tabindex="0">
       <div class="guide-card">
         <h3>🎨 BIMI SVG Requirements</h3>
         <ul style="list-style: none;">
@@ -824,14 +1045,14 @@
     </div>
 
     <!-- VMC Certificates Tab -->
-    <div class="tab-content" id="vmcTab">
+    <div class="tab-content" id="vmcTab" role="tabpanel" aria-labelledby="tabVMC" tabindex="0">
       <div class="guide-card">
         <h3>🔐 VMC (Verified Mark Certificate)</h3>
         <p>VMCs are special certificates that prove you own the trademark for your logo. When present, email clients show a verified checkmark badge.</p>
-        
-        <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 1rem;">
+
+        <div style="margin: 1rem 0; padding: 1rem; background: var(--panel-bg2); border-radius: 1rem;">
           <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="width: 60px; height: 60px; background: #008080; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white;">🏷️</div>
+            <div style="width: 60px; height: 60px; background: var(--accent-solid); border-radius: 30px; display: flex; align-items: center; justify-content: center; color: white;">🏷️</div>
             <div>
               <span style="font-size: 1.2rem;">Example Brand</span>
               <span style="background: #27ae60; color: white; padding: 0.2rem 0.8rem; border-radius: 20px; margin-left: 0.5rem;">✓ Verified</span>
@@ -852,7 +1073,7 @@
     </div>
 
     <!-- Examples Tab -->
-    <div class="tab-content" id="examplesTab">
+    <div class="tab-content" id="examplesTab" role="tabpanel" aria-labelledby="tabExamples" tabindex="0">
       <div class="guide-card">
         <h3>✨ BIMI Examples</h3>
         <table class="bimi-table">
@@ -890,7 +1111,7 @@
   </div>
 
   <footer>
-    bimi.hbenali.ovh · display your logo in email · part of email authentication suite
+    bimi.hbenali.ovh · display your logo in email · part of email authentication suite · <a href="https://hbenali.ovh" target="_blank" rel="noopener noreferrer">hbenali.ovh</a>
   </footer>
 </div>
 
@@ -912,36 +1133,76 @@
     const fileInput = document.getElementById('fileInput');
     const svgResults = document.getElementById('svgResults');
 
-    // Tab elements
-    const tabOverview = document.getElementById('tabOverview');
-    const tabSpecs = document.getElementById('tabSpecs');
-    const tabVMC = document.getElementById('tabVMC');
-    const tabExamples = document.getElementById('tabExamples');
-    const overviewTab = document.getElementById('overviewTab');
-    const specsTab = document.getElementById('specsTab');
-    const vmcTab = document.getElementById('vmcTab');
-    const examplesTab = document.getElementById('examplesTab');
+    // Theme
+    const themeToggle = document.getElementById('themeToggle');
+    const THEME_KEY = 'bimiCheckerTheme';
 
-    // Tab switching
-    function switchTab(activeTab, activeContent) {
-      [tabOverview, tabSpecs, tabVMC, tabExamples].forEach(t => t.classList.remove('active'));
-      [overviewTab, specsTab, vmcTab, examplesTab].forEach(t => t.classList.remove('active'));
-      
-      activeTab.classList.add('active');
-      activeContent.classList.add('active');
+    function getStoredTheme() {
+      try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
     }
 
-    if (tabOverview) tabOverview.addEventListener('click', () => switchTab(tabOverview, overviewTab));
-    if (tabSpecs) tabSpecs.addEventListener('click', () => switchTab(tabSpecs, specsTab));
-    if (tabVMC) tabVMC.addEventListener('click', () => switchTab(tabVMC, vmcTab));
-    if (tabExamples) tabExamples.addEventListener('click', () => switchTab(tabExamples, examplesTab));
+    function effectiveTheme() {
+      const stored = getStoredTheme();
+      if (stored === 'light' || stored === 'dark') return stored;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme() {
+      const stored = getStoredTheme();
+      if (stored === 'light' || stored === 'dark') {
+        document.documentElement.setAttribute('data-theme', stored);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      if (themeToggle) themeToggle.textContent = effectiveTheme() === 'dark' ? '☀️' : '🌙';
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        applyTheme();
+      });
+    }
+
+    applyTheme();
+
+    // Tab elements (ARIA tabs pattern: roving tabindex + arrow-key navigation)
+    const tabButtons = ['tabOverview', 'tabSpecs', 'tabVMC', 'tabExamples'].map(id => document.getElementById(id));
+    const tabPanels = ['overviewTab', 'specsTab', 'vmcTab', 'examplesTab'].map(id => document.getElementById(id));
+
+    function switchTab(index) {
+      tabButtons.forEach((btn, i) => {
+        const active = i === index;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        btn.tabIndex = active ? 0 : -1;
+        tabPanels[i].classList.toggle('active', active);
+      });
+    }
+
+    tabButtons.forEach((btn, i) => {
+      if (!btn) return;
+      btn.addEventListener('click', () => switchTab(i));
+      btn.addEventListener('keydown', (e) => {
+        let target = null;
+        if (e.key === 'ArrowRight') target = (i + 1) % tabButtons.length;
+        else if (e.key === 'ArrowLeft') target = (i - 1 + tabButtons.length) % tabButtons.length;
+        else if (e.key === 'Home') target = 0;
+        else if (e.key === 'End') target = tabButtons.length - 1;
+        else return;
+        e.preventDefault();
+        tabButtons[target].focus();
+        switchTab(target);
+      });
+    });
 
     // Helper functions
     function setActiveView(view) {
       if (placeholderState) placeholderState.style.display = 'none';
       if (recordsContainer) recordsContainer.style.display = 'none';
       if (errorContainer) errorContainer.style.display = 'none';
-      
+
       if (view === 'placeholder' && placeholderState) {
         placeholderState.style.display = 'flex';
       } else if (view === 'records' && recordsContainer) {
@@ -960,7 +1221,7 @@
         const url = `https://dns.google/resolve?name=${encodeURIComponent(dmarcDomain)}&type=TXT`;
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.Answer) {
           for (const answer of data.Answer) {
             if (answer.type === 16 && answer.data) {
@@ -979,44 +1240,37 @@
       }
     }
 
-    // Fetch and display logo from URL
-    async function fetchLogo(url, containerId) {
+    // Fetch and display logo from URL. Loaded directly as an <img> — no CORS/proxy
+    // needed to *display* an image, only to read its pixels, which we don't do.
+    function fetchLogo(url, containerId) {
       const container = document.getElementById(containerId);
       if (!container) return;
-      
-      // Show loading
-      container.innerHTML = '<div class="logo-loading"></div>';
-      
-      try {
-        // Use a CORS proxy to fetch the logo
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-        const response = await fetch(proxyUrl);
-        
-        if (!response.ok) throw new Error('Failed to fetch logo');
-        
-        const svgText = await response.text();
-        
-        // Basic validation
-        if (!svgText.includes('<svg')) throw new Error('Not a valid SVG');
-        
-        // Create a blob URL for the SVG
-        const blob = new Blob([svgText], { type: 'image/svg+xml' });
-        const blobUrl = URL.createObjectURL(blob);
-        
-        // Display the logo
-        container.innerHTML = `<img src="${blobUrl}" alt="BIMI Logo" style="max-width:100px; max-height:100px;">`;
-        
-        // Clean up blob URL after load
-        const img = container.querySelector('img');
-        img.onload = () => URL.revokeObjectURL(blobUrl);
-        
-      } catch (error) {
-        console.error('Error fetching logo:', error);
+
+      container.innerHTML = '<div class="logo-loading" role="status" aria-label="Loading logo"></div>';
+
+      if (!/^https:\/\//i.test(url)) {
         container.innerHTML = `
           <div class="logo-placeholder">❌</div>
-          <div class="logo-error">Failed to load logo</div>
+          <div class="logo-error">Logo URL is not HTTPS</div>
         `;
+        return;
       }
+
+      const img = new Image();
+      img.alt = 'BIMI logo preview';
+      img.decoding = 'async';
+      img.referrerPolicy = 'no-referrer';
+      img.onload = () => {
+        container.innerHTML = '';
+        container.appendChild(img);
+      };
+      img.onerror = () => {
+        container.innerHTML = `
+          <div class="logo-placeholder">❌</div>
+          <div class="logo-error">Failed to load logo — <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">open directly</a></div>
+        `;
+      };
+      img.src = url;
     }
 
     // Parse BIMI record
@@ -1024,17 +1278,17 @@
       const tags = {};
       const cleanRecord = record.replace(/^"|"$/g, '');
       const parts = cleanRecord.split(';');
-      
+
       parts.forEach(part => {
         part = part.trim();
         if (!part) return;
-        
+
         const match = part.match(/^([a-zA-Z]+)=(.+)$/);
         if (match) {
           tags[match[1]] = match[2].trim();
         }
       });
-      
+
       return tags;
     }
 
@@ -1075,7 +1329,7 @@
       const tags = parseBIMI(record);
       const validation = validateBIMI(tags);
       const dmarcStatus = await checkDMARC(domain);
-      
+
       let tagsHtml = '';
       for (const [key, value] of Object.entries(tags)) {
         tagsHtml += `
@@ -1091,11 +1345,11 @@
       } else {
         validationHtml += `<span class="validation-badge invalid">❌ Invalid BIMI record</span>`;
       }
-      
+
       validation.errors.forEach(err => {
         validationHtml += `<span class="validation-badge invalid">❌ ${escapeHtml(err)}</span>`;
       });
-      
+
       validation.warnings.forEach(warning => {
         validationHtml += `<span class="validation-badge warning">⚠️ ${escapeHtml(warning)}</span>`;
       });
@@ -1104,16 +1358,16 @@
       let dmarcHtml = '';
       if (dmarcStatus.valid) {
         dmarcHtml = `
-          <div style="margin: 1rem 0; padding: 1rem; background: #d4edda; border-radius: 1rem;">
+          <div style="margin: 1rem 0; padding: 1rem; background: var(--success-bg); border-radius: 1rem;">
             <span class="validation-badge valid">✅ DMARC ${dmarcStatus.policy}</span>
-            <span style="margin-left: 1rem; color: #27ae60;">BIMI ready!</span>
+            <span style="margin-left: 1rem; color: var(--success-text);">BIMI ready!</span>
           </div>
         `;
       } else {
         dmarcHtml = `
-          <div style="margin: 1rem 0; padding: 1rem; background: #ffe1e1; border-radius: 1rem;">
+          <div style="margin: 1rem 0; padding: 1rem; background: var(--invalid-bg); border-radius: 1rem;">
             <span class="validation-badge invalid">❌ DMARC not ready</span>
-            <span style="margin-left: 1rem; color: #c0392b;">Requires p=quarantine or p=reject</span>
+            <span style="margin-left: 1rem; color: var(--invalid-text);">Requires p=quarantine or p=reject</span>
           </div>
         `;
       }
@@ -1126,41 +1380,41 @@
             <h2>🏷️ BIMI record for</h2>
             <span class="badge-domain">${escapeHtml(bimiDomain)}</span>
           </div>
-          
+
           <div class="record-meta">
             <span class="meta-item">🌐 Domain: ${escapeHtml(domain)}</span>
             <span class="meta-item">🔑 Selector: ${escapeHtml(selector)}</span>
           </div>
-          
+
           ${dmarcHtml}
-          
+
           <div class="logo-preview-section">
             <div class="logo-display">
               <div class="logo-box" id="logoPreviewContainer">
                 <div class="logo-placeholder">🏷️</div>
               </div>
-              <div style="font-size: 0.9rem; color: #006666;">Logo Preview</div>
+              <div style="font-size: 0.9rem; color: var(--accent-dark);">Logo Preview</div>
             </div>
             <div class="logo-info">
               <span class="logo-meta">📸 ${tags.l || 'No logo URL'}</span>
               ${tags.a ? `<span class="logo-meta">🔐 VMC: ${tags.a}</span>` : ''}
-              <p style="margin-top: 1rem; color: #4f6f6f;">Upload your SVG below to test compatibility</p>
+              <p style="margin-top: 1rem; color: var(--text-muted);">Upload your SVG below to test compatibility</p>
             </div>
           </div>
-          
+
           <div class="tag-list">
             ${tagsHtml}
           </div>
-          
+
           <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;">
             ${validationHtml}
           </div>
-          
+
           <div class="record-card">
             ${escapeHtml(record)}
           </div>
-          
-          <div style="margin-top: 1rem; font-size:0.9rem; background: #e6f2f2; padding:1rem; border-radius:30px;">
+
+          <div style="margin-top: 1rem; font-size:0.9rem; background: var(--chip-bg2); padding:1rem; border-radius:30px;">
             <strong>📋 DNS lookup:</strong> ${escapeHtml(bimiDomain)} IN TXT
           </div>
         `;
@@ -1196,27 +1450,27 @@
     async function queryBIMI(domain, selector) {
       let cleanDomain = domain.trim().replace(/\.+$/, '');
       let cleanSelector = selector.trim().replace(/\.+$/, '') || 'default';
-      
+
       if (!cleanDomain) throw new Error('Please enter a domain');
-      
+
       const bimiDomain = `${cleanSelector}._bimi.${cleanDomain}`;
-      
+
       const url = `https://dns.google/resolve?name=${encodeURIComponent(bimiDomain)}&type=TXT`;
-      
+
       const response = await fetch(url);
       if (!response.ok) throw new Error(`DNS query failed (HTTP ${response.status})`);
-      
+
       const data = await response.json();
-      
+
       if (data.Status === 3) {
         throw new Error(`No BIMI record found for "${bimiDomain}"`);
       } else if (data.Status !== 0) {
         const reason = data.Comment || `DNS error code ${data.Status}`;
         throw new Error(`DNS lookup error: ${reason}`);
       }
-      
+
       const answers = data.Answer || [];
-      
+
       // Find BIMI records (TXT records starting with v=BIMI1)
       const bimiRecords = answers.filter(r => {
         if (r.type === 16 && r.data) {
@@ -1225,17 +1479,17 @@
         }
         return false;
       });
-      
+
       if (bimiRecords.length === 0) {
         throw new Error(`No BIMI record found for "${bimiDomain}"`);
       }
-      
+
       if (bimiRecords.length > 1) {
         throw new Error(`Multiple BIMI records found`);
       }
-      
+
       let record = bimiRecords[0].data.replace(/^"|"$/g, '');
-      
+
       return {
         domain: cleanDomain,
         selector: cleanSelector,
@@ -1247,10 +1501,10 @@
     // Main lookup function
     async function performLookup() {
       if (!domainInput) return;
-      
+
       const domain = domainInput.value.trim();
       const selector = selectorInput ? selectorInput.value.trim() : 'default';
-      
+
       if (!domain) {
         setActiveView('error');
         if (errorContainer) {
@@ -1263,7 +1517,7 @@
         }
         return;
       }
-      
+
       setLoading(true);
       try {
         const result = await queryBIMI(domain, selector);
@@ -1287,27 +1541,25 @@
 
     // SVG Upload handling
     if (uploadArea && fileInput) {
-      uploadArea.addEventListener('click', () => fileInput.click());
-      
       uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         uploadArea.classList.add('dragover');
       });
-      
+
       uploadArea.addEventListener('dragleave', () => {
         uploadArea.classList.remove('dragover');
       });
-      
+
       uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('dragover');
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
           handleSVGFile(files[0]);
         }
       });
-      
+
       fileInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
           handleSVGFile(e.target.files[0]);
@@ -1317,28 +1569,34 @@
 
     // SVG file handler
     function handleSVGFile(file) {
-      if (!file.type.includes('svg')) {
-        alert('Please upload an SVG file');
+      if (!file.type.includes('svg') && !file.name.toLowerCase().endsWith('.svg')) {
+        svgResults.style.display = 'block';
+        svgResults.innerHTML = `
+          <div class="error-message">
+            <span style="font-size:2rem;">⚠️</span>
+            <div><strong>Wrong file type</strong><br>Please upload an SVG file</div>
+          </div>
+        `;
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onload = function(e) {
         const svgContent = e.target.result;
-        
+
         // Basic SVG validation
         const isValidSVG = svgContent.includes('<svg') && svgContent.includes('</svg>');
         const isTinySVG = svgContent.includes('baseProfile="tiny"') || !svgContent.includes('script');
-        
+
         svgResults.style.display = 'block';
         svgResults.innerHTML = `
-          <h3 style="color: #006666; margin-bottom: 1rem;">🖼️ SVG Analysis</h3>
+          <h3 style="color: var(--accent-dark); margin-bottom: 1rem;">🖼️ SVG Analysis</h3>
           <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
             <div style="flex: 0 0 120px; text-align: center;">
               <div class="logo-box" style="margin: 0 auto;">
-                ${svgContent.includes('<svg') ? 
-                  '<div style="width:80px;height:80px;background:#e6f2f2;display:flex;align-items:center;justify-content:center;font-size:2rem;">✅</div>' : 
-                  '<div style="width:80px;height:80px;background:#ffe1e1;display:flex;align-items:center;justify-content:center;font-size:2rem;">❌</div>'}
+                ${svgContent.includes('<svg') ?
+                  '<div style="width:80px;height:80px;background:var(--chip-bg2);display:flex;align-items:center;justify-content:center;font-size:2rem;">✅</div>' :
+                  '<div style="width:80px;height:80px;background:var(--invalid-bg);display:flex;align-items:center;justify-content:center;font-size:2rem;">❌</div>'}
               </div>
             </div>
             <div style="flex: 1;">
@@ -1350,9 +1608,9 @@
                   ${isTinySVG ? '✅ Tiny profile' : '⚠️ Check Tiny 1.2'}
                 </span>
               </div>
-              <p style="color: #4f6f6f; margin-top: 1rem;">
-                File size: ${(file.size / 1024).toFixed(2)}KB ${file.size > 32768 ? 
-                  '<span class="invalid">(⚠️ Exceeds 32KB limit)</span>' : 
+              <p style="color: var(--text-muted); margin-top: 1rem;">
+                File size: ${(file.size / 1024).toFixed(2)}KB ${file.size > 32768 ?
+                  '<span class="invalid">(⚠️ Exceeds 32KB limit)</span>' :
                   '<span class="valid">(✓ Within limit)</span>'}
               </p>
             </div>
@@ -1373,14 +1631,14 @@
     // Handle URL parameters
     function handleUrlParameter() {
       if (!domainInput) return;
-      
+
       const urlParams = new URLSearchParams(window.location.search);
       const domainParam = urlParams.get('domain');
       const selectorParam = urlParams.get('selector');
-      
+
       if (domainParam) domainInput.value = domainParam;
       if (selectorParam && selectorInput) selectorInput.value = selectorParam;
-      
+
       if (domainParam) {
         setTimeout(() => performLookup(), 100);
       }
