@@ -472,6 +472,31 @@
       border: 1px solid var(--card-border);
     }
 
+    .share-btn {
+      background: var(--chip-bg2);
+      color: var(--accent-dark);
+      border: 1px solid var(--card-border);
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 30px;
+      box-shadow: none;
+      margin-left: auto;
+    }
+
+    .share-btn:hover {
+      background: var(--chip-bg);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .inline-feedback {
+      flex-basis: 100%;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
     .logo-preview-section {
       display: flex;
       flex-wrap: wrap;
@@ -923,7 +948,7 @@
       <i>example.com</i>
     </label>
     <div class="domain-input-wrapper">
-      <input type="text" id="domainInput" placeholder="e.g. example.com" value="google.com" spellcheck="false" autocomplete="off">
+      <input type="text" id="domainInput" placeholder="e.g. example.com" value="ebay.com" spellcheck="false" autocomplete="off">
     </div>
 
     <label for="selectorInput" style="margin-top: 0.5rem;">
@@ -1080,14 +1105,14 @@
         <table class="bimi-table">
           <tr><th>Domain</th><th>BIMI Status</th><th>Logo</th></tr>
           <tr>
-            <td>google.com</td>
+            <td>ebay.com</td>
             <td><span class="valid">✅ Active</span></td>
-            <td><div style="width: 40px; height: 40px; background: #4285F4; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">G</div></td>
+            <td><div style="width: 40px; height: 40px; background: #E53238; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">eb</div></td>
           </tr>
           <tr>
-            <td>yahoo.com</td>
+            <td>paypal.com</td>
             <td><span class="valid">✅ Active</span></td>
-            <td><div style="width: 40px; height: 40px; background: #6001D1; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">Y</div></td>
+            <td><div style="width: 40px; height: 40px; background: #003087; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white;">P</div></td>
           </tr>
           <tr>
             <td>linkedin.com</td>
@@ -1381,6 +1406,7 @@
           <div class="result-header">
             <h2>🏷️ BIMI record for</h2>
             <span class="badge-domain">${escapeHtml(bimiDomain)}</span>
+            <button class="share-btn" id="shareLinkBtn" type="button">🔗 Share Link</button>
           </div>
 
           <div class="record-meta">
@@ -1425,7 +1451,39 @@
         if (tags.l) {
           fetchLogo(tags.l, 'logoPreviewContainer');
         }
+
+        const shareBtn = document.getElementById('shareLinkBtn');
+        if (shareBtn) {
+          shareBtn.addEventListener('click', async () => {
+            const params = new URLSearchParams({ domain });
+            if (selector && selector !== 'default') params.set('selector', selector);
+            const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+            const header = shareBtn.closest('.result-header');
+            try {
+              await navigator.clipboard.writeText(shareUrl);
+              flashInlineFeedback(header, 'Shareable link copied to clipboard!');
+            } catch (e) {
+              flashInlineFeedback(header, "Couldn't copy automatically — copy it manually: " + shareUrl);
+            }
+          });
+        }
       }
+    }
+
+    // shows a small transient inline confirmation instead of a blocking alert()
+    function flashInlineFeedback(container, message) {
+      if (!container) return;
+      let note = container.querySelector('.inline-feedback');
+      if (!note) {
+        note = document.createElement('span');
+        note.className = 'inline-feedback';
+        note.setAttribute('role', 'status');
+        container.appendChild(note);
+      }
+      note.textContent = message;
+      clearTimeout(note._hideTimer);
+      note._hideTimer = setTimeout(() => { note.textContent = ''; }, 2500);
     }
 
     function escapeHtml(unsafe) {
