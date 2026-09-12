@@ -1,0 +1,8 @@
+# BIMI Checker
+
+> Free, single-page tool to validate a domain's BIMI DNS record, DMARC readiness, logo preview, and VMC certificate details.
+
+Static site (no backend, no build step, no dependencies) at https://bimi.hbenali.ovh — a single `index.html` calling public APIs directly from the browser. Looks up the `selector._bimi.domain` TXT record via DNS-over-HTTPS, checks DMARC policy compatibility (`p=quarantine`/`p=reject`), validates the `v=`/`l=`/`a=` tags, renders the referenced SVG logo, and lets you drag & drop your own SVG to check size, format, and Tiny 1.2 profile basics.
+
+## Pages
+- [BIMI Checker](https://bimi.hbenali.ovh/): the tool itself, plus a guide covering BIMI, SVG logo specs, and VMC certificates.
