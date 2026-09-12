@@ -8,6 +8,11 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://bimi.hbenali.ovh/">
 
+  <!-- Security (static hosting: no custom HTTP headers, so CSP/referrer are set here; X-Frame-Options/X-Content-Type-Options need a real header and aren't achievable via meta) -->
+  <!-- img-src stays open to https: because BIMI logos are hosted at whatever domain the record points to -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://dns.google; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="BIMI Checker — Logo Inspector & DMARC/BIMI Record Validator">
