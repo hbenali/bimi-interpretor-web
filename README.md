@@ -11,7 +11,7 @@ No backend, no build step, no dependencies — it's one static `index.html` call
 - **Record validation** — flags missing/invalid `v=`, `l=`, `a=` tags and non-HTTPS URLs
 - **Logo preview** — renders the referenced SVG logo directly in the browser
 - **SVG upload & analysis** — drag & drop your own logo to check size, format, and Tiny 1.2 profile basics
-- **Dark mode** with persisted preference
+- Dark editorial design, fonts self-hosted (see `fonts/README.md`)
 - **Guide section** — BIMI overview, SVG specs, VMC certificates, and real-world examples
 - Fully responsive, accessible (ARIA tabs, WCAG AA contrast), and SEO-tagged (Open Graph, Twitter Card, JSON-LD)
 
