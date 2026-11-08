@@ -39,6 +39,21 @@
     --sodium: #e9a23b;
     --verdigris: #5db7a0;
     --fail: #e5776f;
+    --glow: rgba(233, 162, 59, 0.2);
+    --glow-soft: rgba(233, 162, 59, 0.06);
+    --glass: rgba(12, 18, 24, 0.82);
+    --wash: rgba(23, 33, 43, 0.6);
+    --rule: rgba(38, 51, 65, 0.7);
+    --track-btn: rgba(12, 18, 24, 0.3);
+    --logo-bg: #e7e1d3;
+    --logo-fg: #0c1218;
+    --logo-edge: transparent;
+    --logo-track: rgba(12, 18, 24, 0.2);
+    --logo-fail: #8f2a22;
+    --on-brand: #ffffff;
+    --brand-ebay: #c4161c;
+    --brand-paypal: #003087;
+    --brand-linkedin: #0a66c2;
 
     --display: 'Big Shoulders', 'Arial Narrow', Impact, sans-serif;
     --serif: 'Newsreader', Georgia, serif;
@@ -46,6 +61,31 @@
 
     --gutter: clamp(1.5rem, 4vw, 2.5rem);
     color-scheme: dark;
+}
+
+/* Light: follows the system setting, no toggle. Dark above is the default and the identity.
+   Contrast on --ink (page) / --slate (surface): text 16/14.7, muted 6.0/5.4, accent 5.5/4.9, ok 5.2/4.7, fail 5.7/5.1.
+   The logo preview box stays a light neutral in both modes so logos remain visible. */
+@media (prefers-color-scheme: light) {
+    :root {
+        --ink: #f4efe4;
+        --slate: #e9e3d4;
+        --line: #cbc3b0;
+        --bone: #0c1218;
+        --mist: #4f5b67;
+        --sodium: #8a5300;
+        --verdigris: #1b7058;
+        --fail: #b3261e;
+        --glow: rgba(233, 162, 59, 0.22);
+        --glow-soft: rgba(233, 162, 59, 0.07);
+        --glass: rgba(244, 239, 228, 0.86);
+        --wash: rgba(233, 227, 212, 0.7);
+        --rule: rgba(203, 195, 176, 0.8);
+        --track-btn: rgba(244, 239, 228, 0.3);
+        --logo-bg: #ffffff;
+        --logo-edge: #cbc3b0;
+        color-scheme: light;
+    }
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -102,8 +142,8 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 /* ───────────── Top bar ───────────── */
 .bar {
     position: fixed; inset: 0 0 auto 0; z-index: 40;
-    border-bottom: 1px solid rgba(38, 51, 65, 0.7);
-    background: rgba(12, 18, 24, 0.82);
+    border-bottom: 1px solid var(--rule);
+    background: var(--glass);
     -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
 .bar-inner {
@@ -124,7 +164,7 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 .hero::before {
     content: ''; position: absolute; z-index: -1; top: -14rem; right: -12rem;
     width: min(46rem, 140vw); aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(233, 162, 59, 0.2), rgba(233, 162, 59, 0.06) 55%, transparent);
+    background: radial-gradient(closest-side, var(--glow), var(--glow-soft) 55%, transparent);
     pointer-events: none;
 }
 .hero h1 { font-size: clamp(2.9rem, 11vw, 10rem); margin-left: -0.03em; }
@@ -171,7 +211,7 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 .btn:active { transform: none; }
 .btn:disabled { opacity: 0.7; cursor: progress; transform: none; }
 
-.loader { display: inline-block; width: 1rem; height: 1rem; border: 2px solid rgba(12, 18, 24, 0.3); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loader { display: inline-block; width: 1rem; height: 1rem; border: 2px solid var(--track-btn); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
 #btnLoader { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -218,14 +258,14 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 .logo-preview-section { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin: 2rem 0; padding: 1.5rem 0; border-block: 1px solid var(--line); }
 .logo-display { flex: 0 0 120px; }
 .logo-box {
-    width: 120px; height: 120px; background: var(--bone); color: var(--ink); border-radius: 2px;
+    width: 120px; height: 120px; background: var(--logo-bg); color: var(--logo-fg); border: 1px solid var(--logo-edge); border-radius: 2px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; text-align: center;
 }
 .logo-box svg, .logo-box img { max-width: 100px; max-height: 100px; }
-.logo-placeholder { font-size: 1rem; line-height: 1.3; color: var(--ink); padding: 0.25rem; }
+.logo-placeholder { font-size: 1rem; line-height: 1.3; color: var(--logo-fg); padding: 0.25rem; }
 .logo-placeholder.bad { font-weight: 700; }
-.logo-loading { width: 36px; height: 36px; border: 3px solid rgba(12, 18, 24, 0.2); border-top-color: var(--ink); border-radius: 50%; animation: spin 1s linear infinite; }
-.logo-error { color: #8f2a22; font-size: 0.9rem; line-height: 1.3; padding: 0 0.25rem; }
+.logo-loading { width: 36px; height: 36px; border: 3px solid var(--logo-track); border-top-color: var(--logo-fg); border-radius: 50%; animation: spin 1s linear infinite; }
+.logo-error { color: var(--logo-fail); font-size: 0.9rem; line-height: 1.3; padding: 0 0.25rem; }
 .logo-error a { color: inherit; }
 .logo-caption { margin-top: 0.5rem; color: var(--mist); font-size: 1rem; }
 .logo-info { flex: 1 1 14rem; min-width: 0; }
@@ -242,7 +282,7 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 
 /* Upload */
 .upload-area { display: block; border: 1px dashed var(--mist); padding: 3rem 1.5rem; cursor: pointer; transition: border-color 0.2s, background-color 0.2s; max-width: 40rem; }
-.upload-area:hover, .upload-area.dragover { border-color: var(--sodium); background-color: rgba(23, 33, 43, 0.6); }
+.upload-area:hover, .upload-area.dragover { border-color: var(--sodium); background-color: var(--wash); }
 .upload-area:has(#fileInput:focus-visible) { outline: 2px solid var(--sodium); outline-offset: 4px; }
 .upload-area p { font-size: 1.25rem; }
 .upload-area .upload-hint { color: var(--mist); font-size: 1rem; }
@@ -291,10 +331,10 @@ footer a:hover, footer a:focus-visible { color: var(--sodium); background-size: 
 .bimi-table { width: 100%; border-collapse: collapse; }
 .bimi-table th { text-align: left; font-weight: 600; padding: 0.7rem 1rem 0.7rem 0; border-bottom: 1px solid var(--mist); }
 .bimi-table td { padding: 0.7rem 1rem 0.7rem 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
-.swatch { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.9rem; }
-.sw-ebay { background: #c4161c; }
-.sw-paypal { background: #003087; }
-.sw-linkedin { background: #0a66c2; }
+.swatch { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--on-brand); font-weight: 700; font-size: 0.9rem; }
+.sw-ebay { background: var(--brand-ebay); }
+.sw-paypal { background: var(--brand-paypal); }
+.sw-linkedin { background: var(--brand-linkedin); }
 .verified { margin-left: 0.5rem; color: var(--verdigris); font-size: 1rem; }
 .brand-row { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0; }
 .brand-row .avatar { background: var(--sodium); color: var(--ink); width: 3.5rem; height: 3.5rem; }
@@ -307,7 +347,7 @@ footer { color: var(--mist); font-size: 1rem; }
 .nf { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-block: 7rem 4rem; position: relative; isolation: isolate; overflow: hidden; }
 .nf::before {
     content: ''; position: absolute; z-index: -1; top: -12rem; right: -10rem; width: min(40rem, 140vw); aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(233, 162, 59, 0.2), rgba(233, 162, 59, 0.06) 55%, transparent);
+    background: radial-gradient(closest-side, var(--glow), var(--glow-soft) 55%, transparent);
 }
 .nf-code { font-size: clamp(9rem, 34vw, 28rem); color: var(--sodium); }
 .nf h1 { font-size: clamp(2.8rem, 7vw, 5rem); margin-top: 0.5rem; }
